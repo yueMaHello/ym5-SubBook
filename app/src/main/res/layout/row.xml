@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/nameText1"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/dateText1"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/nameText1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/chargeText1"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/dateText1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/commentText1"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/nameText1"
+        android:layout_toEndOf="@+id/nameText1"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_above="@+id/button2"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/dateText1"
+        android:background="#FFFFFF"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="Edit/View"
+        android:textColor="#0099CC" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/dateText1"
+        android:layout_toEndOf="@+id/dateText1"
+        android:background="#FFFFFF"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:text="Delete"
+        android:textColor="#0099CC" />
+
+</RelativeLayout>
+
+
