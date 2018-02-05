@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import android.content.Context;
 import android.os.Bundle;
@@ -39,9 +40,6 @@ public class MainActivity extends AppCompatActivity{
     private ListView listView;
     private EditText name,date,charge,comment,totalCharge;
     private ArrayList<subscription> subsList;
-    private TotalCostCalculation totalCostCalculation = new TotalCostCalculation();
-
-
     private UserCustomAdapter userAdapter;
 
     /**
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity{
         listView.setItemsCanFocus(false);
         listView.setAdapter(userAdapter);
         //calculate total charge when loaded
-        totalCharge.setText(totalCostCalculation.totalMonthlyCharge(subsList));
+        totalCharge.setText(totalMonthlyCharge(subsList));
         //listen to userAdapter, if there is a click on button, it will fetch the event
         userAdapter.setOnClickListenerEditOrDelete(new UserCustomAdapter.OnClickListenerEditOrDelete() {
             @Override
@@ -95,7 +93,7 @@ public class MainActivity extends AppCompatActivity{
 
                 subsList.remove(position);
                 userAdapter.notifyDataSetChanged();
-                totalCharge.setText(totalCostCalculation.totalMonthlyCharge(subsList));
+                totalCharge.setText(totalMonthlyCharge(subsList));
                 saveInFile();
 
             }
@@ -119,7 +117,7 @@ public class MainActivity extends AppCompatActivity{
                         date,charge,comment) )== true){
                     subscription subscription = new subscription(nameString, dateString, chargeString, commentString);
                     subsList.add(subscription);
-                    totalCharge.setText(totalCostCalculation.totalMonthlyCharge(subsList));
+                    totalCharge.setText(totalMonthlyCharge(subsList));
 
                     userAdapter.notifyDataSetChanged();
                     name.setText(null);
@@ -150,7 +148,7 @@ public class MainActivity extends AppCompatActivity{
                     subsList.get(currentLocation).setDate(date.getText().toString());
                     subsList.get(currentLocation).setCharge(charge.getText().toString());
                     subsList.get(currentLocation).setComments(comment.getText().toString());
-                    totalCharge.setText(totalCostCalculation.totalMonthlyCharge(subsList));
+                    totalCharge.setText(totalMonthlyCharge(subsList));
 
                     userAdapter.notifyDataSetChanged();
                     saveInFile();
@@ -261,6 +259,26 @@ public class MainActivity extends AppCompatActivity{
         }
         return Boolean.TRUE;
 
+    }
+    public String totalMonthlyCharge(ArrayList<subscription> allSubs){
+        float totalCost = 0;
+        for(int i = 0;i<allSubs.size();i++){
+            totalCost+=allSubs.get(i).getCharge();
+        }
+        totalCost = round(totalCost,2);
+
+        return Float.toString(totalCost);
+
+    }
+
+    /**
+     * round float to some decimal length
+     * @param d floatnumber
+     * @param decimalPlace number of decimal bits
+     * @return
+     */
+    public static float round(float d, int decimalPlace) {
+        return BigDecimal.valueOf(d).setScale(decimalPlace,BigDecimal.ROUND_HALF_UP).floatValue();
     }
 
     /**
