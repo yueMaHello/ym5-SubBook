@@ -7,6 +7,7 @@ package com.example.ym5_subbook;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,10 +30,11 @@ import java.util.ArrayList;
  */
 
 public class UserCustomAdapter extends ArrayAdapter<subscription>{
-    private OnClickListenerEditOrDelete onClickListenerEditOrDelete;
-    private Context context;
+    protected Context context;
     private int layoutResourceId;
     private ArrayList<subscription> listData = new ArrayList<subscription>();
+    private OnClickListenerDelete onClickListenerDelete;
+
 
     public UserCustomAdapter(Context context, int layoutResourceId, ArrayList<subscription> data) {
         super(context, layoutResourceId, data);
@@ -73,26 +75,18 @@ public class UserCustomAdapter extends ArrayAdapter<subscription>{
         holder.btnEdit.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v){
-                if(onClickListenerEditOrDelete!=null){
-                    onClickListenerEditOrDelete.OnClickListenerEdit(position);
-
-                }
-
+                Intent editViewIntent = new Intent(v.getContext(),EditViewActivity.class);
+                editViewIntent.putExtra("position",position);
+                v.getContext().startActivity(editViewIntent);
             }
-
-
-
         });
 
         holder.btnDelete.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                if(onClickListenerEditOrDelete!=null){
-                    onClickListenerEditOrDelete.OnClickListenerDelete(position);
-
+                if(onClickListenerDelete!=null){
+                    onClickListenerDelete.OnClickListenerDelete(position);
                 }
-
             }
         });
         return row;
@@ -111,16 +105,17 @@ public class UserCustomAdapter extends ArrayAdapter<subscription>{
     /**
      * interface to set on click event
      */
-    public interface OnClickListenerEditOrDelete{
-        void OnClickListenerEdit(int position);
+    public interface OnClickListenerDelete{
         void OnClickListenerDelete(int position);
     }
     /**
      *the method to generate the method in the interface OnClickListenerEditOrDelete
      */
-    public void setOnClickListenerEditOrDelete(OnClickListenerEditOrDelete onClickListenerEditOrDelete1){
-        this.onClickListenerEditOrDelete=onClickListenerEditOrDelete1;
+    public void setOnClickListenerDelete(OnClickListenerDelete onClickListenerEditOrDelete1){
+        this.onClickListenerDelete=onClickListenerEditOrDelete1;
     }
+
+
 
 }
 

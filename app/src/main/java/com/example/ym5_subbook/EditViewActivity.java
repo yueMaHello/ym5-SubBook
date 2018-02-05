@@ -5,28 +5,15 @@
 
 package com.example.ym5_subbook;
 /**
- * MainActivity is used to generate the initial page of the App and control the life cycle of the App.
- * All features of the App are controlled by this MainActivity.
- * User can add, edit, delete, and view each subscription by clicking buttons controlled by the MainActivity.
- *
+ * Created on 2018-02-05.
  * @author: Yue Ma
  * @version:1.0
- * Acknowledgment:
- * 1. Function onCreate, onStart, loadFromFile, saveInFile used in all activity classes are modified from Lonely-tweet class provided in lab
-
+ * This activity is used to handle edit and view action of the subscription list.
+ * After the user clicks the edit button, the current row will be passed in to this activity.
+ * After the user finishes changing/viewing, this activity will call main activity to send
+ * back the newest data.
  */
 
-import java.lang.reflect.Type;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,17 +22,25 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity{
 
+public class EditViewActivity extends AppCompatActivity {
+    private int currentLocation;
     private static final String FILENAME = "file.sav";
-    private ListView listView;
     private EditText name,date,charge,comment,totalCharge;
     private ArrayList<subscription> subsList;
-    private UserCustomAdapter userAdapter;
 
     /**
      *  Called when the activity is first created.
@@ -56,70 +51,59 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_editview);
+        Bundle bd = this.getIntent().getExtras();
+        if(bd!=null) {
+            currentLocation = bd.getInt("position");
+        }
 
-        name = (EditText) findViewById(R.id.nameText);
-        date = (EditText) findViewById(R.id.dateText);
-        charge = (EditText) findViewById(R.id.chargeText);
-        comment = (EditText) findViewById(R.id.commentText);
-        totalCharge = (EditText) findViewById(R.id.totalMonthlyCharge);
-        final Button addButton = (Button) findViewById(R.id.addButton);
-        listView = (ListView) findViewById(R.id.oldSubsList);
+        name = (EditText) findViewById(R.id.nameText2);
+        date = (EditText) findViewById(R.id.dateText2);
+        charge = (EditText) findViewById(R.id.chargeText2);
+        comment = (EditText) findViewById(R.id.commentText2);
+        final Button finishEdittingButton = (Button) findViewById(R.id.editFinishButton2);
         subsList = new ArrayList<subscription>();
-
         loadFromFile();
-        userAdapter = new UserCustomAdapter(MainActivity.this,R.layout.row,subsList);
-        listView.setItemsCanFocus(false);
-        listView.setAdapter(userAdapter);
-        //calculate total charge when loaded
-        totalCharge.setText(totalMonthlyCharge(subsList));
+
+        //fill the blank lines with one record
+        String currentName = subsList.get(currentLocation).getName();
+        String currentDate = subsList.get(currentLocation).getDate();
+        Float currentCharge = subsList.get(currentLocation).getCharge();
+        String currentComments = subsList.get(currentLocation).getComments();
+        name.setText(currentName);
+        date.setText(currentDate);
+        charge.setText(currentCharge.toString());
+        comment.setText(currentComments);
         /**
-         * add new subscription
+         * save the changes and go back to mainActivity
          */
-        addButton.setOnClickListener(new View.OnClickListener() {
-
+        finishEdittingButton.setOnClickListener(new View.OnClickListener() {
             @Override
-
-            public void onClick(View v) {
-
-                setResult(RESULT_OK);
+            public void onClick(View view) {
                 String nameString = name.getText().toString();
                 String dateString = date.getText().toString();
                 String chargeString = charge.getText().toString();
                 String commentString = comment.getText().toString();
 
                 if((checkUserInput(nameString,dateString,chargeString,commentString,name,
-                        date,charge,comment) )== true){
-                    subscription subscription = new subscription(nameString, dateString, chargeString, commentString);
-                    subsList.add(subscription);
-                    totalCharge.setText(totalMonthlyCharge(subsList));
+                        date,charge,comment) )== true) {
 
-                    userAdapter.notifyDataSetChanged();
-                    name.setText(null);
-                    date.setText(null);
-                    charge.setText(null);
-                    comment.setText(null);
-
+                    subsList.get(currentLocation).setName(name.getText().toString());
+                    subsList.get(currentLocation).setDate(date.getText().toString());
+                    subsList.get(currentLocation).setCharge(charge.getText().toString());
+                    subsList.get(currentLocation).setComments(comment.getText().toString());
                     saveInFile();
+                    Intent MainIntent = new Intent(EditViewActivity.this, MainActivity.class);
+                    startActivity(MainIntent);
+
+                }
+                else{
+                    Log.i("some input wrong","000");
                 }
 
             }
         });
-        userAdapter.setOnClickListenerDelete(new UserCustomAdapter.OnClickListenerDelete() {
-
-            @Override
-            public void OnClickListenerDelete(int position) {
-
-                subsList.remove(position);
-                userAdapter.notifyDataSetChanged();
-                totalCharge.setText(totalMonthlyCharge(subsList));
-                saveInFile();
-
-            }
-        });
-
     }
-
 
     /**
      * Used to load data in memory
@@ -205,36 +189,10 @@ public class MainActivity extends AppCompatActivity{
 
         }
         return Boolean.TRUE;
-
-    }
-    public String totalMonthlyCharge(ArrayList<subscription> allSubs){
-        float totalCost = 0;
-        for(int i = 0;i<allSubs.size();i++){
-            totalCost+=allSubs.get(i).getCharge();
-        }
-        totalCost = round(totalCost,2);
-        return Float.toString(totalCost);
-
-    }
-    /**
-     * round float to some decimal length
-     * @param d floatnumber
-     * @param decimalPlace number of decimal bits
-     * @return
-     */
-    public static float round(float d, int decimalPlace) {
-        return BigDecimal.valueOf(d).setScale(decimalPlace,BigDecimal.ROUND_HALF_UP).floatValue();
-    }
-    /**
-     * destory the application
-     */
-    @Override
-    protected void onDestroy() {
-        Log.i("Lifecycle", "onDestroy is called");
-        super.onDestroy();
-        subsList = null;
-        listView = null;
-        setContentView(null);
     }
 }
+
+
+
+
 
