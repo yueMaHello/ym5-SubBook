@@ -25,8 +25,7 @@ import java.util.ArrayList;
  * Oct 1, 2017
  *
  * Acknowledgement:
- *  1. Function onCreate, onStart, loadFromFile, saveInFile used in all activity classes are modified from Lonely-tweet class provided in lab
- *  2. Class UserCustomAdapter are learned and modified from //http://www.androidhub4you.com/2013/02/muftitouch-listview-multi-click.html
+ *  1. Class UserCustomAdapter are learned and modified from //http://www.androidhub4you.com/2013/02/muftitouch-listview-multi-click.html
  */
 
 public class UserCustomAdapter extends ArrayAdapter<subscription>{

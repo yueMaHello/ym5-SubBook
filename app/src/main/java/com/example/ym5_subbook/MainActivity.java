@@ -5,10 +5,15 @@
 
 package com.example.ym5_subbook;
 /**
- * Represents monthly subscription
+ * MainActivity is used to generate the initial page of the App and control the life cycle of the App.
+ * All features of the App are controlled by this MainActivity.
+ * User can add, edit, delete, and view each subscription by clicking buttons controlled by the MainActivity.
+ *
  * @author: Yue Ma
  * @version:1.0
- *
+ * Acknowledgment:
+ * 1. Function onCreate, onStart, loadFromFile, saveInFile used in all activity classes are modified from Lonely-tweet class provided in lab
+
  */
 
 import java.lang.reflect.Type;

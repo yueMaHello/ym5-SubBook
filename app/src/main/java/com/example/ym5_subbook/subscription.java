@@ -6,7 +6,10 @@
 package com.example.ym5_subbook;
 
 /**
- * build a subscription
+ * Build a subscription. Each subscription has 4 attributes: name, started date, charge, comments.
+ * All attributes are assigned as private. Public methods are created to set and get the value of
+ * each element.
+ *
  * @author: Yue Ma
  * @version:1.0
  *
