@@ -1,17 +1,8 @@
 /*
- * MainActivity
+ * Copyright (c)2018 Yue Ma - All Rights Reserved. Email Address: ym5@ualberta.ca
  *
- * Version 1.0
- *
- * Oct 1, 2017
- *
- * Acknowledgement:
- *  1. Function onCreate, onStart, loadFromFile, saveInFile used in all activity classes are modified from Lonely-tweet class provided in lab
- *  2. Class CustomAdapter are learned and modified from https://www.journaldev.com/10416/android-listview-with-custom-adapter-example-tutorial
  */
 
-
-//http://www.androidhub4you.com/2013/02/muftitouch-listview-multi-click.html
 package com.example.ym5_subbook;
 
 import android.app.Activity;
@@ -22,36 +13,35 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
-//http://www.androidhub4you.com/2013/02/muftitouch-listview-multi-click.html
-public class UserCustomAdapter extends ArrayAdapter<subscription> {
+
+/*
+ *UserCustomAdapter
+ *@author: Yue Ma
+ * Version 1.0
+ *
+ * Oct 1, 2017
+ *
+ * Acknowledgement:
+ *  1. Function onCreate, onStart, loadFromFile, saveInFile used in all activity classes are modified from Lonely-tweet class provided in lab
+ *  2. Class UserCustomAdapter are learned and modified from //http://www.androidhub4you.com/2013/02/muftitouch-listview-multi-click.html
+ */
+
+public class UserCustomAdapter extends ArrayAdapter<subscription>{
     private OnClickListenerEditOrDelete onClickListenerEditOrDelete;
-    Context context;
-    int layoutResourceId;
-    ArrayList<subscription> data = new ArrayList<subscription>();
-    private EditText name,date,charge,comment;
-    UserHolder mainHolder = null;
-    private OnClickListener myButtonListener = null;
-    public void setItemCheckButtonListener(OnClickListener myButtonListener){
-        this.myButtonListener = myButtonListener;
-    }
-
-
-
+    private Context context;
+    private int layoutResourceId;
+    private ArrayList<subscription> listData = new ArrayList<subscription>();
 
     public UserCustomAdapter(Context context, int layoutResourceId, ArrayList<subscription> data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
-        this.data = data;
+        this.listData = data;
 
     }
-
-
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
@@ -75,12 +65,12 @@ public class UserCustomAdapter extends ArrayAdapter<subscription> {
         } else {
             holder = (UserHolder) row.getTag();
         }
-        subscription sub = data.get(position);
+        subscription sub = listData.get(position);
         holder.nameText.setText(sub.getName());
         holder.dateText.setText(sub.getDate());
         holder.chargeText.setText(String.valueOf(sub.getCharge()));
         holder.commentText.setText(sub.getComments());
-
+        //listen to the click on buttons
         holder.btnEdit.setOnClickListener(new OnClickListener(){
             @Override
             public void onClick(View v){
@@ -109,7 +99,7 @@ public class UserCustomAdapter extends ArrayAdapter<subscription> {
         return row;
 
     }
-
+    // a holder used to store xml components
     static class UserHolder {
         TextView nameText;
         TextView dateText;
@@ -118,11 +108,17 @@ public class UserCustomAdapter extends ArrayAdapter<subscription> {
         Button btnEdit;
         Button btnDelete;
     }
+
+    /**
+     * interface to set on click event
+     */
     public interface OnClickListenerEditOrDelete{
         void OnClickListenerEdit(int position);
         void OnClickListenerDelete(int position);
     }
-
+    /**
+     *the method to generate the method in the interface OnClickListenerEditOrDelete
+     */
     public void setOnClickListenerEditOrDelete(OnClickListenerEditOrDelete onClickListenerEditOrDelete1){
         this.onClickListenerEditOrDelete=onClickListenerEditOrDelete1;
     }

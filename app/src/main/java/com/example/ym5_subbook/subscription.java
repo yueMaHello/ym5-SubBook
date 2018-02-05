@@ -1,9 +1,16 @@
+/*
+ * Copyright (c)2018 Yue Ma - All Rights Reserved. Email Address: ym5@ualberta.ca
+ *
+ */
+
 package com.example.ym5_subbook;
 
 /**
- * Created by a123456 on 2018-02-02.
+ * build a subscription
+ * @author: Yue Ma
+ * @version:1.0
+ *
  */
-
 public class subscription {
     private String name;
     private String date;
@@ -15,37 +22,62 @@ public class subscription {
         this.charge = Float.parseFloat(charge);;
         this.comments = comments;
     }
-    public String getName(){
-        return this.name;
 
-    }
-    public String getDate(){
-        return this.date;
-    }
-    public float getCharge(){
-        return this.charge;
-    }
-    public String getComments(){
-        return this.comments;
-    }
+    /**
+     * get name
+     * @return name
+     */
+    public String getName(){return this.name;}
 
+    /**
+     * get date
+     * @return date
+     */
+    public String getDate(){return this.date;}
+
+    /**
+     * get charge
+     * @return charge
+     */
+    public float getCharge(){return this.charge;}
+
+    /**
+     *get comments
+     * @return comments
+     */
+    public String getComments(){return this.comments;}
+
+    /**
+     * set NAME
+     * @param newName
+     */
     public void setName(String newName){
         this.name = newName;
-
     }
+
+    /**
+     * set date
+     * @param newDate
+     */
     public void setDate(String newDate){
         this.date = newDate;
     }
+
+    /**
+     * set charge
+     * @param newCharge
+     */
     public void setCharge(String newCharge){
 
         this.charge = Float.parseFloat(newCharge);
     }
+
+    /**
+     * set comments
+     * @param newComments
+     */
     public void setComments(String newComments){
         this.comments = newComments;
-    }
-
-    public String toString(){
-        return name+"|"+date+"|"+charge+"|"+comments;
     }
 
 }

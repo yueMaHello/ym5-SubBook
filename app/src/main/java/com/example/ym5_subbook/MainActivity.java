@@ -1,9 +1,17 @@
+/*
+ * Copyright (c)2018 Yue Ma - All Rights Reserved. Email Address: ym5@ualberta.ca
+ *
+ */
+
 package com.example.ym5_subbook;
+/**
+ * Represents monthly subscription
+ * @author: Yue Ma
+ * @version:1.0
+ *
+ */
 
 import java.lang.reflect.Type;
-
-import android.app.Activity;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -12,24 +20,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 
 public class MainActivity extends AppCompatActivity{
 
@@ -38,11 +39,10 @@ public class MainActivity extends AppCompatActivity{
     private ListView listView;
     private EditText name,date,charge,comment,totalCharge;
     private ArrayList<subscription> subsList;
-    private ArrayAdapter<subscription> adapter;
-    TotalCostCalculation totalCostCalculation = new TotalCostCalculation();
+    private TotalCostCalculation totalCostCalculation = new TotalCostCalculation();
 
 
-    UserCustomAdapter userAdapter;
+    private UserCustomAdapter userAdapter;
 
     /**
      *  Called when the activity is first created.
@@ -60,24 +60,18 @@ public class MainActivity extends AppCompatActivity{
         charge = (EditText) findViewById(R.id.chargeText);
         comment = (EditText) findViewById(R.id.commentText);
         totalCharge = (EditText) findViewById(R.id.totalMonthlyCharge);
-
-
         final Button finishEdittingButton = (Button) findViewById(R.id.editFinishButton);
         final Button addButton = (Button) findViewById(R.id.addButton);
-
         listView = (ListView) findViewById(R.id.oldSubsList);
         subsList = new ArrayList<subscription>();
 
         loadFromFile();
-        //adapter = new ArrayAdapter<subscription>( this, R.layout.list_item, subsList);
-        //listView.setAdapter(adapter);
         userAdapter = new UserCustomAdapter(MainActivity.this,R.layout.row,subsList);
         listView.setItemsCanFocus(false);
-
         listView.setAdapter(userAdapter);
+        //calculate total charge when loaded
         totalCharge.setText(totalCostCalculation.totalMonthlyCharge(subsList));
-
-
+        //listen to userAdapter, if there is a click on button, it will fetch the event
         userAdapter.setOnClickListenerEditOrDelete(new UserCustomAdapter.OnClickListenerEditOrDelete() {
             @Override
             public void OnClickListenerEdit(int position) {
@@ -92,9 +86,7 @@ public class MainActivity extends AppCompatActivity{
                 charge.setText(currentCharge.toString());
                 comment.setText(currentComments);
                 addButton.setVisibility(View.INVISIBLE);
-
                 finishEdittingButton.setVisibility(View.VISIBLE);
-
 
             }
 
@@ -108,9 +100,9 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
-
-
-
+        /**
+         * add new subscription
+         */
         addButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -125,8 +117,6 @@ public class MainActivity extends AppCompatActivity{
 
                 if((checkUserInput(nameString,dateString,chargeString,commentString,name,
                         date,charge,comment) )== true){
-
-
                     subscription subscription = new subscription(nameString, dateString, chargeString, commentString);
                     subsList.add(subscription);
                     totalCharge.setText(totalCostCalculation.totalMonthlyCharge(subsList));
@@ -142,6 +132,9 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
+        /**
+         * apply new change
+         */
         finishEdittingButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -178,9 +171,6 @@ public class MainActivity extends AppCompatActivity{
 
 
         });
-
-
-
     }
 
 
@@ -219,35 +209,50 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    /**
+     * check whether the user's input follows the format
+     * @param name user input
+     * @param date user input
+     * @param charge user input
+     * @param comments user input
+     * @param nameEdit EditText
+     * @param dateEdit EditText
+     * @param chargeEdit EditText
+     * @param commentEdit EditText
+     * @return
+     */
     public Boolean checkUserInput(String name,String date,String charge,String comments, EditText nameEdit,EditText
             dateEdit,EditText chargeEdit,EditText commentEdit){
         boolean isDate = false;
         String datePattern = "\\d{4}-\\d{2}-\\d{2}";
         isDate = date.matches(datePattern);
 
-
-
         float chargeFloat = -0.1f;
         try {
             chargeFloat = Float.parseFloat(charge);
         }catch(NumberFormatException e){
+            //check whether charge is an integer
             chargeEdit.setError("Not an integer!");
             return false;
         }
 
         if(name.length()>20){
+            //check the length of the name
             nameEdit.setError("Name is too long!");
             return false;
         }
         else if(comments.length()>30){
+            //check the length of the comments
             commentEdit.setError("Comment is too long!");
             return false;
         }
         else if(chargeFloat<0){
+            //check charge is non-negative
             chargeEdit.setError("Charge shouldn't be negative!");
             return false;
         }
         else if(isDate == false){
+            //check date format
             dateEdit.setError("Date format is not yyyy-mm-dd");
             return false;
 
@@ -258,13 +263,9 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-
-
-
-
-
-
-
+    /**
+     * destory the application
+     */
     @Override
     protected void onDestroy() {
         Log.i("Lifecycle", "onDestroy is called");
